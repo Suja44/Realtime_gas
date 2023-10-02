@@ -1,23 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+// Import Firebase Realtime Database functions
+import { ref, getDatabase, onValue } from "firebase/database";
+import { app } from "./config/firebase";
+const db = getDatabase(app);
 
 function App() {
+  let gasValues = [];
+
+  const gasRef = ref(db, "test");
+  onValue(gasRef, (snapshot) => {
+    const data = snapshot.val();
+
+    const gas = { Methane: data.a, Ammonia: data.b, name: data.Time };
+    gasValues.push(gas);
+    // console.log(gas);
+    if (gasValues.length > 10000) {
+      gasValues.shift();
+    }
+    console.log(gasValues);
+  });
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* <button onClick={() => getData()}>get data</button> */}
+      <p>real-time data</p>
     </div>
   );
 }
